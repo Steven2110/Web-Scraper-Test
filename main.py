@@ -4,6 +4,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from parameter import *
 import pandas as pd
+import os
 
 class Scrape:
     def get_data_from_category(self, category_name):
@@ -12,18 +13,20 @@ class Scrape:
         xpath = '//*[@id="products-inner"]'
         product_list = self.driver.find_element(By.XPATH, xpath)
         page = 1
-        
+
         data_temp = f'data_{category_name}_pg_{page}.txt'
         image_temp = f'img_{category_name}_pg_{page}.txt'
 
-        self.file_text_names[category_name].append(data_temp)
-        self.file_img_names[category_name].append(image_temp)
+        data_path = os.path.join(self.current_dir, "data", data_temp)
+        self.file_text_names[category_name].append(data_path)
+        img_path = os.path.join(self.current_dir, "img", data_temp)
+        self.file_img_names[category_name].append(img_path)
 
-        file = open(data_temp, 'w')
+        file = open(data_path, 'w')
         file.write(product_list.text)
         file.close()
 
-        file = open(image_temp, 'w')
+        file = open(img_path, 'w')
         for i in range(30):
             print(f"Getting {category_name} image {i + 1}!")
             file.write(str(self.get_img_from_category(i + 1) + '\n'))
@@ -37,8 +40,10 @@ class Scrape:
             # product_list = self.wait.until(EC.presence_of_element_located((By.XPATH, xpath)))
             # data_temp = f'data_ikra_pg_{page}.txt'
             # image_temp = f'img_{category_name}_pg_{page}.txt'
-            # self.file_text_names[category_name].append(data_temp)
-            # self.file_img_names[category_name].append(image_temp)
+            # data_path = os.path.join(self.current_dir, "data", data_temp)
+            # self.file_text_names[category_name].append(data_path)
+            # img_path = os.path.join(self.current_dir, "img", data_temp)
+            # self.file_img_names[category_name].append(img_path)
             # file = open(data_temp, 'w')
             # file.write(product_list.text)
             # file.close()
@@ -70,7 +75,8 @@ class Scrape:
                 "image": []
             }
             for file_img_name in self.file_img_names[category]:
-                file = open(file_img_name, 'r')
+                img_path = os.path.join(self.current_dir, "img", file_img_name)
+                file = open(img_path, 'r')
                 lines = file.read().splitlines()
                 file.close()
                 
@@ -78,7 +84,8 @@ class Scrape:
                     data_final['image'].append(image)
 
             for file_text_name in self.file_text_names[category]:
-                file = open(file_text_name, 'r')
+                data_path = os.path.join(self.current_dir, "data", file_text_name)
+                file = open(data_path, 'r')
                 lines = file.read().splitlines()
                 file.close()            
                 count = 1
@@ -160,6 +167,7 @@ class Scrape:
             "coffee_beans": [],
             "bread": []
         }
+        self.current_dir = os.path.abspath(os.getcwd())
 
 s = Scrape()
 for category_name in category_names:
