@@ -12,4 +12,4 @@
 3. Run the ```main.py``` by entering ```python main.py``` on CommandPrompt or Terminal.
 4. Then you can see the result in the file ```result.xlsx```
 
-~Steven Wijaya, 2022~
+-Steven Wijaya, 2022-
